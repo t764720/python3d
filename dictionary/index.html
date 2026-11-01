@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس الأول: القواميس في لغة بايثون</title>
+    <style>
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+            background-color: #f4f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0077b6;
+            border-bottom: 2px solid #ade8f4;
+            padding-bottom: 5px;
+        }
+        code {
+            background: #eef1f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            direction: ltr;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            direction: ltr;
+            text-align: left;
+            font-family: monospace;
+            font-size: 17px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        .interactive-box {
+            background: #e0fbfc;
+            border: 1px dashed #0096c7;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #00b4d8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 5px;
+        }
+        button:hover {
+            background-color: #0077b6;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>الوحدة الثالثة: هياكل البيانات الخطية</h1>
+        <p>الدرس الأول: القواميس (Dictionaries in Python)</p>
+    </header>
+
+    <main>
+        <!-- مقدمة الدرس -->
+        <section>
+            <h2>ما هو القاموس (Dictionary)؟</h2>
+            <p>القاموس هو هيكل بيانات قابل للتغيير يتضمن مجموعة من العناصر، ويتكون كل عنصر من زوج من القيم على صورة <code>(key: value)</code> أي (المفتاح : القيمة). يتم الوصول إلى عناصر القاموس من خلال مفاتيحه وليس بواسطة رقم الفهرس.</p>
+        </section>
+
+        <!-- طرق إنشاء القاموس -->
+        <section>
+            <h2>1. طرق إنشاء القاموس</h2>
+            <p><strong>الطريقة الأولى (باستخدام الأقواس المتعرجة `{}`):</strong></p>
+            <div class="code-block">
+ArabGulf = {"Saudi Arabia": "Riyadh", "Oman": "Muscat", "Bahrain": "Manama"}<br>
+print(ArabGulf)
+            </div>
+
+            <p style="margin-top: 15px;"><strong>الطريقة الثانية (باستخدام أمر الإنشاء `dict()`):</strong></p>
+            <div class="code-block">
+ArabGulf = dict(SaudiArabia="Riyadh", Oman="Muscat", Bahrain="Manama")<br>
+print(ArabGulf)
+            </div>
+        </section>
+
+        <!-- الوصول وطباعة قيمة محددة -->
+        <section>
+            <h2>2. الوصول إلى عناصر القاموس وطباعتها</h2>
+            <p>يمكن الوصول إلى عناصر القاموس عبر طريقتين أساسيتين:</p>
+            <div class="code-block">
+ArabGulf = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"SaudiArabia": "Riyadh",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Oman": "Muscat"<br>
+}<br><br>
+# الطريقة الأولى: باستخدام مفتاح العنصر داخل أقواس مربعة<br>
+capital1 = ArabGulf["SaudiArabia"]<br>
+print(capital1)  # النتيجة: Riyadh<br><br>
+# الطريقة الثانية: باستخدام دالة get<br>
+capital2 = ArabGulf.get("Oman")<br>
+print(capital2)  # النتيجة: Muscat
+            </div>
+        </section>
+
+        <!-- التعديل على القاموس -->
+        <section>
+            <h2>3. التعديل على عناصر القاموس</h2>
+            <p>يمكن تحديث وتغيير قيمة عنصر داخل القاموس من خلال تحديد المفتاح وإسناد القيمة الجديدة:</p>
+            <div class="code-block">
+Employees = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Khalid": "Project Manager",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Saad": "Data Analyst"<br>
+}<br>
+Employees["Saad"] = "Data Scientist"<br>
+print(Employees)
+            </div>
+        </section>
+
+        <!-- حذف عناصر القاموس -->
+        <section>
+            <h2>4. طرق حذف عناصر القاموس</h2>
+            <p>يتيح بايثون عدة خيارات لحذف العناصر أو القاموس بالكامل:</p>
+            
+            <p><strong>أ) استخدام كلمة `del` لحذف عنصر محدد أو القاموس بأكمله:</strong></p>
+            <div class="code-block">
+ArabGulf = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"SaudiArabia": "Riyadh",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Oman": "Muscat",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Bahrain": "Manama"<br>
+}<br><br>
+# حذف عنصر معين بالمفتاح<br>
+del ArabGulf["Oman"]<br>
+print(ArabGulf)<br><br>
+# حذف القاموس بأكمله<br>
+del ArabGulf
+            </div>
+
+            <p style="margin-top: 15px;"><strong>ب) استخدام دالة `clear()` لحذف جميع عناصر القاموس مع إبقاء القاموس فارغاً:</strong></p>
+            <div class="code-block">
+ArabGulf = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"SaudiArabia": "Riyadh",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Oman": "Muscat"<br>
+}<br>
+ArabGulf.clear()<br>
+print(ArabGulf)  # النتيجة: {}
+            </div>
+        </section>
+
+        <!-- الأنشطة التفاعلية -->
+        <section>
+            <h2>أنشطة تفاعلية للتدريب</h2>
+
+            <div class="interactive-box">
+                <h3>تدريب (1): الوصول للعناصر</h3>
+                <p>كيف يتم الوصول إلى العناصر داخل القاموس في لغة بايثون؟</p>
+                <button onclick="checkAnswer(1, 'right')">بواسطة مفاتيح القاموس (Keys)</button>
+                <button onclick="checkAnswer(1, 'wrong')">بواسطة رقم الفهرس (Index)</button>
+                <div id="ans1"></div>
+            </div>
+
+            <div class="interactive-box" style="margin-top: 20px;">
+                <h3>تدريب (2): الحذف من القاموس</h3>
+                <p>أي الدوال أو الكلمات الآتية تُستخدم لإزالة كافة عناصر القاموس دفعة واحدة؟</p>
+                <button onclick="checkAnswer(2, 'right')">استخدام دالة <code>clear()</code></button>
+                <button onclick="checkAnswer(2, 'wrong')">استخدام دالة <code>get()</code></button>
+                <div id="ans2"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function checkAnswer(questionNum, status) {
+            const resElement = document.getElementById('ans' + questionNum);
+            resElement.className = "result"; // إعادة ضبط الـ class
+            
+            if (questionNum === 1) {
+                if (status === 'right') {
+                    resElement.classList.add('correct');
+                    resElement.textContent = 'إجابة صحيحة! يتم الوصول لعناصر القاموس عبر مفاتيحه.';
+                } else {
+                    resElement.classList.add('wrong');
+                    resElement.textContent = 'إجابة خاطئة. رقم الفهرس يخص القوائم والصفوف وليس القواميس.';
+                }
+            } else if (questionNum === 2) {
+                if (status === 'right') {
+                    resElement.classList.add('correct');
+                    resElement.textContent = 'إجابة صحيحة! دالة clear() تُستخدم لإزالة جميع عناصر القاموس.';
+                } else {
+                    resElement.classList.add('wrong');
+                    resElement.textContent = 'إجابة خاطئة. دالة get() مخصصة للبحث وإرجاع القيمة المرتبطة بالمفتاح فقط.';
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

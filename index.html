@@ -184,52 +184,39 @@ print(ArabGulf)  # النتيجة: {}
             </div>
         </section>
 
-        <!-- الأنشطة التفاعلية -->
+        <!-- الأنشطة والتدريبات -->
         <section>
-            <h2>أنشطة تفاعلية للتدريب</h2>
+            <h2>أنشطة وتدريبات عملية</h2>
 
             <div class="interactive-box">
-                <h3>تدريب (1): الوصول للعناصر</h3>
-                <p>كيف يتم الوصول إلى العناصر داخل القاموس في لغة بايثون؟</p>
-                <button onclick="checkAnswer(1, 'right')">بواسطة مفاتيح القاموس (Keys)</button>
-                <button onclick="checkAnswer(1, 'wrong')">بواسطة رقم الفهرس (Index)</button>
-                <div id="ans1"></div>
+                <h3>تدريب (1): إنشاء وطباعة قاموس شخصي</h3>
+                <p><strong>المطلوب:</strong> أنشئ قاموساً خاصاً باسمك، واسم العائلة، ثم اطبعه.</p>
+                <div class="code-block" style="margin-top: 10px;">
+# الحل البرمجي المقترح:<br>
+my_info = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"first_name": "محمد",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"last_name": "العتيبي"<br>
+}<br><br>
+print(my_info)
+                </div>
             </div>
 
             <div class="interactive-box" style="margin-top: 20px;">
-                <h3>تدريب (2): الحذف من القاموس</h3>
-                <p>أي الدوال أو الكلمات الآتية تُستخدم لإزالة كافة عناصر القاموس دفعة واحدة؟</p>
-                <button onclick="checkAnswer(2, 'right')">استخدام دالة <code>clear()</code></button>
-                <button onclick="checkAnswer(2, 'wrong')">استخدام دالة <code>get()</code></button>
-                <div id="ans2"></div>
+                <h3>تدريب (2): تعبئة قاموس من المستخدم</h3>
+                <p><strong>المطلوب:</strong> أنشئ قاموساً يتم تعبئته من قبل المستخدم، بحيث يدخل رقم هاتفه واسمه ثم يطبعهما.</p>
+                <div class="code-block" style="margin-top: 10px;">
+# الحل البرمجي المقترح:<br>
+user_name = input("أدخل اسمك: ")<br>
+user_phone = input("أدخل رقم هاتفك: ")<br><br>
+user_profile = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"name": user_name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"phone": user_phone<br>
+}<br><br>
+print(user_profile)
+                </div>
             </div>
         </section>
     </main>
-
-    <script>
-        function checkAnswer(questionNum, status) {
-            const resElement = document.getElementById('ans' + questionNum);
-            resElement.className = "result"; // إعادة ضبط الـ class
-            
-            if (questionNum === 1) {
-                if (status === 'right') {
-                    resElement.classList.add('correct');
-                    resElement.textContent = 'إجابة صحيحة! يتم الوصول لعناصر القاموس عبر مفاتيحه.';
-                } else {
-                    resElement.classList.add('wrong');
-                    resElement.textContent = 'إجابة خاطئة. رقم الفهرس يخص القوائم والصفوف وليس القواميس.';
-                }
-            } else if (questionNum === 2) {
-                if (status === 'right') {
-                    resElement.classList.add('correct');
-                    resElement.textContent = 'إجابة صحيحة! دالة clear() تُستخدم لإزالة جميع عناصر القاموس.';
-                } else {
-                    resElement.classList.add('wrong');
-                    resElement.textContent = 'إجابة خاطئة. دالة get() مخصصة للبحث وإرجاع القيمة المرتبطة بالمفتاح فقط.';
-                }
-            }
-        }
-    </script>
 
 </body>
 </html>

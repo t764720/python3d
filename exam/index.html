@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار بايثون التفاعلي - القواميس Dictionaries</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Cairo & Fira Code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Pyodide: Full Real Python in Browser WebAssembly -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: isolate;
+        }
+        /* Strict LTR editor & terminal styles */
+        #python-code {
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: isolate;
+            tab-size: 4;
+            white-space: pre;
+            word-wrap: normal;
+            overflow-x: auto;
+        }
+        #terminal-output {
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: isolate;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-brand-700 via-brand-600 to-indigo-800 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-white/10 p-2.5 rounded-xl border border-white/20 shadow-inner">
+                    <i class="fa-brands fa-python text-3xl text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight">منصة الاختبارات البرمجية الذكية</h1>
+                    <p class="text-xs sm:text-sm text-indigo-100 font-medium">مادة المهارات الرقمية  - درس القواميس (Dictionaries)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <div id="pyodide-badge" class="flex items-center gap-1.5 bg-amber-500/20 text-amber-200 border border-amber-400/30 text-xs px-2.5 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <span>تهيئة محرك بايثون...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow">
+        
+        <!-- Student Info Card -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 mb-6">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+                <i class="fa-solid fa-user-graduate text-brand-600 text-lg"></i>
+                <h2 class="text-base font-bold text-slate-800">بيانات الطالب / الممتحن</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">اسم الطالب ثلاثي <span class="text-rose-500">*</span></label>
+                    <input type="text" id="student-name" placeholder="أدخل اسمك الكامل..." 
+                           class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-600 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">الصف / الشعبة <span class="text-rose-500">*</span></label>
+                    <input type="text" id="student-grade" placeholder="مثال: ثاني ثانوي - 3" 
+                           class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-600 transition">
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Card -->
+        <section class="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 text-white rounded-2xl shadow-md border border-indigo-800 p-6 mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="bg-indigo-500 text-white text-xs font-bold px-2.5 py-1 rounded-md uppercase">السؤال العملي</span>
+                    <h3 class="text-lg font-bold text-yellow-300">إدارة سجل درجات المواد باستخدام قاموس (Dictionary)</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs bg-amber-500/20 border border-amber-400/40 px-3.5 py-1 rounded-full text-amber-200 font-bold">
+                        الدرجة الكلية: 14 درجة (درجتان لكل خطوة)
+                    </span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 space-y-2.5 text-sm leading-relaxed">
+                <p class="font-semibold text-indigo-200">اكتب برنامج بايثون ينفذ المهام والمراحل السبع التالية بالترتيب الدقيق:</p>
+                <ol class="list-decimal list-inside space-y-2 text-slate-200 pr-1">
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>1. عرّف قاموساً باسم <code class="code-font bg-slate-900 text-yellow-300 px-2 py-0.5 rounded text-xs">Subjects</code> لتخزين درجات: <code class="code-font text-emerald-400">'math' = 90</code> و <code class="code-font text-emerald-400">'science' = 85</code>.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>2. اطبع عناصر القاموس لأول مرة.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>3. أضف مادة جديدة: <code class="code-font text-emerald-400">'arabic'</code> بدرجة <code class="code-font text-emerald-400">88</code>.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>4. اطبع عناصر القاموس بعد الإضافة.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>5. عدّل درجة مادة <code class="code-font text-emerald-400">'math'</code> لتصبح <code class="code-font text-emerald-400">95</code>.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5 border-b border-slate-700/50">
+                        <span>6. احذف مادة <code class="code-font text-emerald-400">'science'</code> من القاموس.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                    <li class="flex items-center justify-between py-0.5">
+                        <span>7. اطبع عناصر القاموس بعد التعديل والحذف.</span>
+                        <span class="text-[11px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-800 font-bold">درجتان</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- IDE Workspace (Editor + Output + Grading) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Code Editor Column -->
+            <div class="lg:col-span-7 flex flex-col">
+                <div class="bg-slate-900 rounded-t-2xl px-4 py-3 border-t border-x border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-xs font-mono text-slate-400 mr-2" dir="ltr">main.py</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] bg-slate-800 text-indigo-300 px-2 py-0.5 rounded border border-slate-700 font-mono" dir="ltr">LTR Mode</span>
+                        <button onclick="resetCodeTemplate()" title="استعادة القالب الأولي" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 transition">
+                            <i class="fa-solid fa-arrow-rotate-right ml-1"></i> إعادة تعيين
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="relative flex-1">
+                    <textarea id="python-code" 
+                              dir="ltr"
+                              class="w-full h-80 lg:h-[420px] bg-slate-950 text-slate-100 p-4 code-font text-sm leading-relaxed border-x border-slate-700 focus:outline-none focus:ring-0 resize-none font-mono" 
+                              spellcheck="false" 
+                              placeholder="# Write your Python code here..."></textarea>
+                </div>
+
+                <!-- Editor Controls -->
+                <div class="bg-slate-900 rounded-b-2xl p-3 border-b border-x border-slate-700 flex flex-wrap items-center justify-between gap-2">
+                    <button id="run-btn" onclick="executePythonCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition duration-150 flex items-center gap-2 shadow-md hover:shadow-emerald-600/30">
+                        <i class="fa-solid fa-play"></i>
+                        <span>تشغيل وفحص الكود</span>
+                    </button>
+                    <span class="text-xs text-slate-400">يمكنك تجربة الكود وتعديله عدة مرات قبل التسليم النهائي</span>
+                </div>
+            </div>
+
+            <!-- Terminal & Evaluation Column -->
+            <div class="lg:col-span-5 flex flex-col gap-4">
+                
+                <!-- Terminal / Execution Output -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 flex flex-col overflow-hidden shadow-sm">
+                    <div class="bg-slate-800/90 px-4 py-2.5 border-b border-slate-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-slate-300 text-xs font-mono">
+                            <i class="fa-solid fa-terminal text-brand-500"></i>
+                            <span>شاشة المخرجات (Standard Output)</span>
+                        </div>
+                        <button onclick="clearTerminal()" class="text-xs text-slate-400 hover:text-slate-200">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <pre id="terminal-output" dir="ltr" class="p-4 bg-slate-950 text-emerald-400 code-font text-xs h-36 overflow-y-auto whitespace-pre-wrap leading-relaxed select-text font-normal font-mono">اضغط على زر "تشغيل وفحص الكود" لعرض نتيجة تنفيذ البرنامج...</pre>
+                </div>
+
+                <!-- Automated Evaluation Card -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm flex flex-col flex-1">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-brand-600"></i>
+                            <h4 class="font-bold text-sm text-slate-800">التحقق الذكي والدرجة</h4>
+                        </div>
+                        <div id="score-badge" class="bg-slate-100 text-slate-700 font-extrabold text-sm px-3 py-1 rounded-full border border-slate-200">
+                            الدرجة: -- / 14
+                        </div>
+                    </div>
+
+                    <!-- Evaluation checklist (7 steps, 2 points each = 14 total) -->
+                    <div class="mt-3 space-y-1.5 flex-1 text-xs">
+                        <div id="check-1" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">1. تعريف قاموس Subjects بـ ('math': 90, 'science': 85)</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-2" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">2. طباعة عناصر القاموس لأول مرة</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-3" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">3. إضافة مادة جديدة: 'arabic' = 88</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-4" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">4. طباعة عناصر القاموس بعد إضافة 'arabic'</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-5" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">5. تعديل درجة 'math' إلى 95</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-6" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">6. حذف مادة 'science' من القاموس</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+
+                        <div id="check-7" class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-circle text-slate-400 check-icon"></i>
+                                <span class="font-medium text-slate-700">7. طباعة عناصر القاموس بعد التعديل والحذف</span>
+                            </div>
+                            <span class="font-bold text-slate-500">2 درجات</span>
+                        </div>
+                    </div>
+
+                    <!-- Final Submission Button -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-2">
+                        <button id="submit-quiz-btn" onclick="submitExamToSheet()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+                            <span>إرسال الاختبار   </span>
+                        </button>
+                        <div id="submission-status" class="text-xs text-center font-medium hidden"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Success Confirmation Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">تم تسليم الاختبار بنجاح!</h3>
+            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                تم توثيق إجابتك ورصد الدرجة المستحقة في سجل درجات المعلم على Google Sheets بنجاح.
+            </p>
+            <div id="modal-score-summary" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-800 mb-5">
+                الدرجة المرصودة: -- / 14
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-sm">
+                حسناً
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast Element -->
+    <div id="toast" class="fixed bottom-5 left-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toast-msg">رسالة إشعار</span>
+    </div>
+
+    <!-- Footer with Teacher Script Guide Collapsible -->
+ 
+
+    <!-- Core App Logic -->
+    <script>
+        // =========================================================================
+        // 🔒 إعدادات المعلم الثابتة (مخفية تماماً عن الطالب)
+        // قم بوضع رابط Google Apps Script Web App المباشر بين علامتي التنصيص أدناه:
+        // =========================================================================
+        const GOOGLE_SCRIPT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbynDNh0oc0bVX1BqviwY5aDwlOn_GufVV5xtdjL-qkn6ZzKhciLDEZBmbgaSBKN8FXu/exec";
+
+        // Default Starting Template Code
+        const DEFAULT_CODE_TEMPLATE = `# 1. تعريف القاموس Subjects 
+
+# 2. طباعة عناصر القاموس
+
+# 3. اضافة مادة جديدة: 'arabic' = 88
+
+# 4. طباعة عناصر القاموس
+
+# 5. تحديث درجة math = 95
+
+# 6. حذف مادة science 
+
+# 7. طباعة عناصر القاموس
+
+`;
+
+        let pyodideInstance = null;
+        let isPyodideLoading = true;
+        let currentEvaluation = {
+            score: 0,
+            checks: [false, false, false, false, false, false, false],
+            output: "",
+            error: null
+        };
+
+        // Initialize Pyodide & App State
+        window.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('python-code').value = DEFAULT_CODE_TEMPLATE;
+
+            try {
+                // Initialize Pyodide engine
+                pyodideInstance = await loadPyodide();
+                isPyodideLoading = false;
+                const badge = document.getElementById('pyodide-badge');
+                badge.className = "flex items-center gap-1.5 bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 text-xs px-2.5 py-1.5 rounded-lg";
+                badge.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>محرك بايثون جاهز</span>';
+            } catch (err) {
+                console.error("Pyodide Load Error: ", err);
+                const badge = document.getElementById('pyodide-badge');
+                badge.className = "flex items-center gap-1.5 bg-rose-500/20 text-rose-200 border border-rose-400/30 text-xs px-2.5 py-1.5 rounded-lg";
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><span>فشل تحميل محرك بايثون</span>';
+                showToast("تعذر تحميل محرك بايثون. تحقق من اتصال الإنترنت.", "error");
+            }
+        });
+
+        // Reset Code Template
+        function resetCodeTemplate() {
+            document.getElementById('python-code').value = DEFAULT_CODE_TEMPLATE;
+            showToast("تمت استعادة قالب الكود الأصلي", "info");
+        }
+
+        // Clear Terminal
+        function clearTerminal() {
+            document.getElementById('terminal-output').innerText = "";
+        }
+
+        // Execute and Grade Python Code
+        async function executePythonCode() {
+            if (isPyodideLoading || !pyodideInstance) {
+                showToast("يرجى الانتظار حتى اكتمال تحميل محرك بايثون...", "warning");
+                return;
+            }
+
+            const code = document.getElementById('python-code').value;
+            const terminal = document.getElementById('terminal-output');
+            terminal.innerText = "جاري تنفيذ الكود وتقييمه...\n";
+
+            // Reset Pyodide stdout capture
+            let stdoutAccumulator = "";
+            pyodideInstance.setStdout({
+                batched: (str) => {
+                    stdoutAccumulator += str + "\n";
+                }
+            });
+
+            let errorOccurred = false;
+            let errorText = "";
+
+            try {
+                await pyodideInstance.runPythonAsync(code);
+                terminal.innerText = stdoutAccumulator || "(تم التنفيذ بنجاح دون طباعة أي مخرجات)";
+            } catch (err) {
+                errorOccurred = true;
+                errorText = err.toString();
+                terminal.innerText = "خطأ في تشغيل الكود:\n" + errorText;
+            }
+
+            // Automatic Analysis & Grading Logic for 7 distinct steps (2 points each)
+            evaluateStudentSubmission(code, stdoutAccumulator, errorOccurred);
+        }
+
+        // Smart Rubric Evaluator: 7 steps × 2 points = 14 total points
+        function evaluateStudentSubmission(code, stdout, hasError) {
+            let checks = [false, false, false, false, false, false, false];
+            const cleanCode = code.replace(/\s+/g, ' ');
+            const outputLines = stdout.trim().split("\n").map(l => l.trim()).filter(Boolean);
+
+            // Step 1: Definition of Subjects with math=90 and science=85 (supports english or original names)
+            const hasSubjectsCreation = (/Subjects\s*=\s*\{.*?(math|الرياضيات).*?90.*?(science|العلوم).*?85.*?\}/is.test(cleanCode) ||
+                                         /Subjects\s*=\s*\{.*?(science|العلوم).*?85.*?(math|الرياضيات).*?90.*?\}/is.test(cleanCode) ||
+                                         (cleanCode.includes("Subjects") && cleanCode.includes("90") && cleanCode.includes("85")));
+            if (hasSubjectsCreation) checks[0] = true;
+
+            // Step 2: First print of the dictionary (should contain both 90 and 85, before adding 88)
+            const firstPrintMatched = outputLines.length >= 1 && (
+                (outputLines[0].includes("90") && outputLines[0].includes("85")) ||
+                (stdout.includes("90") && stdout.includes("85"))
+            );
+            if (firstPrintMatched) checks[1] = true;
+
+            // Step 3: Add new subject: arabic = 88
+            const hasAddedArabic = (/Subjects\[['"](arabic|لغتي)['"]\]\s*=\s*88/i.test(cleanCode) ||
+                                    /Subjects\.update\(.*?['"](arabic|لغتي)['"]\s*:\s*88.*?\)/i.test(cleanCode) ||
+                                    (cleanCode.includes("88") && (cleanCode.toLowerCase().includes("arabic") || cleanCode.includes("لغتي"))));
+            if (hasAddedArabic) checks[2] = true;
+
+            // Step 4: Print dictionary after adding arabic (contains 88 and 85)
+            const hasPrintWithArabic = outputLines.some(line => line.includes("88")) || stdout.includes("88");
+            if (hasPrintWithArabic) checks[3] = true;
+
+            // Step 5: Update math grade to 95
+            const hasUpdatedMath = (/Subjects\[['"](math|الرياضيات)['"]\]\s*=\s*95/i.test(cleanCode) ||
+                                    /Subjects\.update\(.*?['"](math|الرياضيات)['"]\s*:\s*95.*?\)/i.test(cleanCode) ||
+                                    (cleanCode.includes("95") && (cleanCode.toLowerCase().includes("math") || cleanCode.includes("الرياضيات"))));
+            if (hasUpdatedMath) checks[4] = true;
+
+            // Step 6: Delete science subject
+            const hasDeletedScience = (/del\s+Subjects\[['"](science|العلوم)['"]\]/i.test(cleanCode) ||
+                                       /Subjects\.pop\(['"](science|العلوم)['"]\)/i.test(cleanCode));
+            if (hasDeletedScience) checks[5] = true;
+
+            // Step 7: Print dictionary after modification & deletion (final line contains 95 and not 85)
+            const lastLine = outputLines[outputLines.length - 1] || "";
+            const finalPrintCorrect = (outputLines.length >= 3 && lastLine.includes("95") && !lastLine.includes("85")) ||
+                                      (stdout.includes("95") && !lastLine.includes("85") && outputLines.length >= 2);
+            if (finalPrintCorrect) checks[6] = true;
+
+            // Calculate total score: 2 points per step
+            const pointsPerStep = 2;
+            let totalScore = 0;
+            checks.forEach((passed) => {
+                if (passed && !hasError) totalScore += pointsPerStep;
+            });
+
+            // Update UI elements for 7 steps
+            for (let i = 1; i <= 7; i++) {
+                const checkEl = document.getElementById(`check-${i}`);
+                if (checkEl) {
+                    const icon = checkEl.querySelector('.check-icon');
+                    if (checks[i - 1] && !hasError) {
+                        checkEl.className = "flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200 transition";
+                        icon.className = "fa-solid fa-circle-check text-emerald-600 check-icon";
+                    } else {
+                        checkEl.className = "flex items-center justify-between p-2 rounded-lg bg-rose-50/70 border border-rose-100 transition";
+                        icon.className = "fa-solid fa-circle-xmark text-rose-500 check-icon";
+                    }
+                }
+            }
+
+            const scoreBadge = document.getElementById('score-badge');
+            scoreBadge.innerText = `الدرجة: ${totalScore} / 14`;
+            if (totalScore === 14) {
+                scoreBadge.className = "bg-emerald-100 text-emerald-800 font-extrabold text-sm px-3.5 py-1 rounded-full border border-emerald-300";
+                showToast("ممتاز! حققت الدرجة الكاملة 14/14", "success");
+            } else {
+                scoreBadge.className = "bg-amber-100 text-amber-800 font-extrabold text-sm px-3.5 py-1 rounded-full border border-amber-300";
+            }
+
+            // Store state for submission
+            currentEvaluation = {
+                score: totalScore,
+                checks: checks,
+                output: stdout || (hasError ? errorText : "No Output"),
+                error: hasError ? errorText : null
+            };
+        }
+
+        // Send Test Results to Google Sheet via Google Apps Script
+        async function submitExamToSheet() {
+            const studentName = document.getElementById('student-name').value.trim();
+            const studentGrade = document.getElementById('student-grade').value.trim();
+            const code = document.getElementById('python-code').value;
+
+            // Form validation
+            if (!studentName || !studentGrade) {
+                showToast("يرجى إدخال اسم الطالب والصف قبل إرسال الاختبار!", "error");
+                document.getElementById('student-name').focus();
+                return;
+            }
+
+            // Check if code was tested
+            if (currentEvaluation.output === "") {
+                showToast("يرجى تشغيل وفحص الكود أولاً قبل التسليم!", "warning");
+                return;
+            }
+
+            // Check Webhook URL configuration
+            if (!GOOGLE_SCRIPT_WEBHOOK_URL || GOOGLE_SCRIPT_WEBHOOK_URL.includes("ضع_رابط_الويب_هوك_هنا")) {
+                showToast("تنبيه للمعلم: يرجى وضع رابط Google Apps Script في متغير GOOGLE_SCRIPT_WEBHOOK_URL داخل الكود.", "warning");
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-quiz-btn');
+            const statusDiv = document.getElementById('submission-status');
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>جاري إرسال الإجابة إلى قوقل شيت...</span>';
+
+            statusDiv.className = "text-xs text-center font-medium text-slate-500 block";
+            statusDiv.innerText = "جاري الاتصال بقاعدة بيانات قوقل شيت...";
+
+            // Prepare payload
+            const payload = {
+                studentName: studentName,
+                studentGrade: studentGrade,
+                score: currentEvaluation.score,
+                checklistSummary: `الخطوات المكتملة: ${currentEvaluation.checks.filter(Boolean).length} من 7 (${currentEvaluation.score}/14)`,
+                code: code,
+                output: currentEvaluation.output
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                statusDiv.className = "text-xs text-center font-bold text-emerald-600 block bg-emerald-50 p-2 rounded-lg border border-emerald-200";
+                statusDiv.innerHTML = '<i class="fa-solid fa-circle-check ml-1"></i> تم إرسال وتوثيق إجابتك بنجاح في سجل المعلم!';
+                
+                // Show modal to student
+                document.getElementById('modal-score-summary').innerText = `الدرجة المرصودة: ${currentEvaluation.score} من 14`;
+                document.getElementById('success-modal').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Submission error:", error);
+                statusDiv.className = "text-xs text-center font-bold text-rose-600 block bg-rose-50 p-2 rounded-lg border border-rose-200";
+                statusDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation ml-1"></i> حدث خطأ أثناء الإرسال. تأكد من اتصال الإنترنت.';
+                showToast("تعذر الإرسال. تحقق من اتصال الإنترنت.", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-base"></i><span>إعادة إرسال النتيجة</span>';
+            }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // Toast Helper
+        function showToast(message, type = "info") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-msg');
+            const iconEl = document.getElementById('toast-icon');
+
+            msgEl.innerText = message;
+
+            if (type === "success") {
+                iconEl.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+            } else if (type === "error") {
+                iconEl.className = "fa-solid fa-circle-xmark text-rose-400 text-sm";
+            } else if (type === "warning") {
+                iconEl.className = "fa-solid fa-triangle-exclamation text-amber-400 text-sm";
+            } else {
+                iconEl.className = "fa-solid fa-circle-info text-blue-400 text-sm";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
